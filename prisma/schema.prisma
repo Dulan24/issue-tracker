@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:MyPassword@localhost:3306/issue-tracker" //env("DATABASE_URL")
 }
 
 model Issue {
@@ -21,6 +21,6 @@ model Issue {
 
 enum Status {
   OPEN
-  IN_PROGRSS
+  IN_PROGRESS
   CLOSED
 }
