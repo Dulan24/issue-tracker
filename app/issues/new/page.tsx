@@ -6,6 +6,7 @@ import { useForm, useController, Controller } from 'react-hook-form';
 import axios from 'axios';
 import "easymde/dist/easymde.min.css";
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 interface IssueForm{
   title: string;
@@ -15,39 +16,39 @@ interface IssueForm{
 const NewIssuePage = () => {
   const router = useRouter();
   const {register, control, handleSubmit, formState:{errors}} = useForm<IssueForm>();
-  
+  const [error, serError] = useState('');
 
   return (
-    <form 
-      className='max-w-xl space-y-3' 
+    <div className='max-w-xl'>
+      {error && 
+        <Callout.Root color='red' className='mb-5'>
+        {error}
+        </Callout.Root>}
+      <form 
+      className='space-y-3' 
       onSubmit={handleSubmit(async(data) => {
-        console.log(data);
-        await axios.post('/api/issues', data);
-        router.push('/issues')
+        try {
+          console.log(data);
+          await axios.post('/api/issues', data);
+          router.push('/issues')
+        } catch (error) {
+          console.log(error)
+          serError('An unexpected error occured.')
+        }
       })}
-    >
-        <TextField.Root 
-          placeholder="Title" 
-          {...register('title', {required: true})} 
-        />
-        {errors.title &&(
-          <Callout.Root color='red'>
-            <Callout.Text>Title is required.</Callout.Text>
-          </Callout.Root>
-        )}
-        <Controller 
-          name='description'
-          control={control}
-          rules={{ required: true }}
-          render={({field})=><SimpleMDE placeholder='Description' {...field}/>}
-        />
-        {errors.description && (
-          <Callout.Root color='red'>
-            <Callout.Text>The description is required.</Callout.Text>
-          </Callout.Root>
-        )}
-        <Button>Submit New Issue</Button>
-    </form>
+      >
+          <TextField.Root 
+            placeholder="Title" 
+            {...register('title')} 
+            />
+          <Controller 
+            name='description'
+            control={control}
+            render={({field})=><SimpleMDE placeholder='Description' {...field}/>}
+            />
+          <Button>Submit New Issue</Button>
+      </form>
+    </div>
   )
 }
 
