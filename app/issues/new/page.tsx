@@ -23,15 +23,7 @@ const NewIssuePage = () => {
   const [error, serError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  return (
-    <div className='max-w-xl'>
-      {error && 
-        <Callout.Root color='red' className='mb-5'>
-        {error}
-        </Callout.Root>}
-      <form 
-      className='space-y-3' 
-      onSubmit={handleSubmit(async(data) => {
+  const onSubmit = handleSubmit(async(data) => {
         try {
           setIsSubmitting(true);
           console.log(data);
@@ -42,7 +34,17 @@ const NewIssuePage = () => {
           console.log(error);
           serError('An unexpected error occured.');
         }
-      })}
+      })
+
+  return (
+    <div className='max-w-xl'>
+      {error && 
+        <Callout.Root color='red' className='mb-5'>
+        {error}
+        </Callout.Root>}
+      <form 
+      className='space-y-3' 
+      onSubmit={onSubmit}
       >
           <TextField.Root 
             placeholder="Title" 
